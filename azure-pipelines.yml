@@ -1,0 +1,77 @@
+# Azure DevOps Pipeline
+name: Testsigma Run and Release
+
+# In Azure, 'trigger' replaces 'on'
+trigger:
+  branches:
+    include:
+      - main
+
+# Azure doesn't use the 'permissions' block like GitHub
+# Permissions are handled via Service Connections or Project Settings
+
+jobs:
+- job: TestAndRelease
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - checkout: self
+
+  - task: PowerShell@2
+    displayName: 'Run Testsigma Script'
+    inputs:
+      targetType: 'filePath'
+      filePath: './testsigma_cicd.ps1'
+      pwsh: true
+    env:
+      TESTSIGMA_API_KEY: $(TESTSIGMA_API_KEY) # Use $(VAR) for Azure secrets
+      REPORT_FILE_PATH: "junit-report.xml"
+      MAX_WAIT_TIME_FOR_SCRIPT_TO_EXIT: "180"
+
+  - task: PowerShell@2
+    displayName: 'Determine Status from Report'
+    name: status_check
+    inputs:
+      targetType: 'inline'
+      pwsh: true
+      script: |
+        $reportPath = "junit-report.xml"
+        $finalStatus = "UNKNOWN"
+        if (Test-Path $reportPath) {
+          [xml]$xml = Get-Content $reportPath
+          $failures = 0
+          $errors = 0
+          if ($xml.testsuites.testsuite) {
+              foreach ($suite in $xml.testsuites.testsuite) {
+                  $failures += [int]$suite.failures
+                  $errors += [int]$suite.errors
+              }
+          } elseif ($xml.testsuite) {
+              $failures += [int]$xml.testsuite.failures
+              $errors += [int]$xml.testsuite.errors
+          }
+          Write-Host "Total Failures: $failures, Total Errors: $errors"
+          $finalStatus = ($failures -eq 0 -and $errors -eq 0) ? "PASSED" : "FAILED"
+        } else {
+          $finalStatus = "TIMEOUT"
+        }
+        Write-Host "##vso[task.setvariable variable=result;isOutput=true]$finalStatus"
+
+  # Note: Azure doesn't have a direct 'softprops/action-gh-release' equivalent.
+  # You would typically use the 'GitHubRelease@1' task if releasing to GitHub from Azure.
+  - task: GitHubRelease@1
+    displayName: 'Create GitHub Release'
+    condition: succeededOrFailed()
+    inputs:
+      gitHubConnection: 'YourGitHubServiceConnection' # You must create this in Azure DevOps
+      repositoryName: '$(Build.Repository.Name)'
+      action: 'create'
+      target: '$(Build.SourceVersion)'
+      tagSource: 'userSpecifiedTag'
+      tag: 'build-$(Build.BuildNumber)'
+      title: 'Test Status $(status_check.result)'
+      releaseNotesSource: 'inline'
+      inlineReleaseNotes: |
+        ### Automated Test Execution
+        **Result:** $(status_check.result)
+        **Test Plan ID:** 2493
