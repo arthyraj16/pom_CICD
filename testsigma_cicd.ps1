@@ -9,8 +9,8 @@
 ##########################################################################################################################################################
 <# START USER INPUTS#>
 
-$TESTSIGMA_API_KEY ="eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJmMjY5MGVmOS1iNTcwLTRhYmMtOGJkYS03YzYxNjNmNzhhMmMiLCJkb21haW4iOiJkZW1vY2hlY2suY29tIiwidGVuYW50SWQiOjYzOTY5LCJpc0lkbGVUaW1lb3V0Q29uZmlndXJlZCI6ZmFsc2V9.Cxfrdqei9xtOA3F5EjVZTrouuO-oEp_sQsrEp6jmFbvPWnaeHkYl1wbFLz3XuZA9rda7461qxxMWs8KaNAsxGw"
-$TESTSIGMA_TEST_PLAN_ID ="2493"
+$TESTSIGMA_API_KEY ="eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJmYzdkZmYyMC1kZjQ4LTQ2MWMtYTAyYy01Yjg2Yzg4MDAyZDgiLCJkb21haW4iOiJkZW1vY2hlY2suY29tIiwidGVuYW50SWQiOjYzOTY5LCJpc0lkbGVUaW1lb3V0Q29uZmlndXJlZCI6ZmFsc2V9.lBIyQoT9dsBGvkj_uZU2-fHg0Q15D1azJ4rA3IXmV1UDHHkS6dRKTuFRl1QITksom9214vQMugRLCBER7ih0wA"
+$TESTSIGMA_TEST_PLAN_ID ="2877"
 $REPORT_FILE_PATH = $env:REPORT_FILE_PATH
 $MAX_WAIT_TIME_FOR_SCRIPT_TO_EXIT = [int]$env:MAX_WAIT_TIME_FOR_SCRIPT_TO_EXIT
 
