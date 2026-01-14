@@ -71,7 +71,7 @@ steps:
   displayName: 'Create GitHub Release'
   condition: always() # Run even if the tests failed
   inputs:
-    gitHubConnection: 'GitHubConnection' # MUST match the name in Project Settings -> Service Connections
+    gitHubConnection: 'arthy' # MUST match the name in Project Settings -> Service Connections
     repositoryName: '$(Build.Repository.Name)'
     action: 'create'
     target: '$(Build.SourceVersion)'
