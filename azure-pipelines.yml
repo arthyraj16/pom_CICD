@@ -2,7 +2,7 @@ trigger:
 - main
 
 pool:
-  vmImage: 'ubuntu-latest'
+  name: 'Sam_Latest'
 
 variables:
   # This points to the folder where source code is checked out
