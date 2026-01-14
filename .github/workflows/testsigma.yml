@@ -1,0 +1,19 @@
+name: Testsigma CI/CD Trigger
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  run-testsigma:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Testsigma Script
+        shell: powershell
+        run: |
+          ./testsigma_cicd.ps1
