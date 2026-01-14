@@ -1,19 +1,31 @@
-name: Testsigma CI/CD Trigger
+name: Testsigma CI-CD Trigger
 
 on:
   push:
     branches:
       - master
+      - main     # Added because many new repos use 'main' by default
+  workflow_dispatch: # Allows you to manually click "Run workflow" in GitHub
 
 jobs:
-  run-testsigma:
+  execute-testsigma:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Verify Script Existence
+        shell: pwsh
+        run: |
+          if (Test-Path "testsigma_cicd.ps1") {
+              Write-Host "✅ Script found."
+          } else {
+              Write-Error "❌ Script 'testsigma_cicd.ps1' not found in root directory!"
+              exit 1
+          }
+
       - name: Run Testsigma Script
-        shell: powershell
+        shell: pwsh
         run: |
           ./testsigma_cicd.ps1
